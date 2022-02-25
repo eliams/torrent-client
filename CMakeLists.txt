@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(torrent-client)
+project(torrent-client
+        DESCRIPTION "A light cli bittorrent client"
+        HOMEPAGE_URL https://github.com/eliams/torrent-client
+        LANGUAGES CXX
+        VERSION 0.0.1)
 
 add_executable(torrent-client
     src/main.cpp
