@@ -1,11 +1,23 @@
 #pragma once
 
-#include <variant>
+#include <list>
+#include <map>
 #include <string>
+#include <variant>
 
 namespace bencode {
 
-using BencodeValue = std::variant<long, std::string>;
+struct BencodeValue;
+
+using BencodeInt = long;
+using BencodeString = std::string;
+using BencodeList = std::list<BencodeValue>;
+using BencodeDictionary = std::map<BencodeString, BencodeValue>;
+
+struct BencodeValue
+{
+    std::variant<std::monostate, BencodeInt, BencodeString, BencodeList, BencodeDictionary> value;
+};
 
 BencodeValue parseBencodeString(const std::string& str);
 
