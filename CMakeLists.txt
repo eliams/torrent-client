@@ -6,6 +6,8 @@ project(torrent-client
         LANGUAGES CXX
         VERSION 0.0.1)
 
+set(CMAKE_CXX_STANDARD 17)
+
 add_executable(torrent-client
     src/main.cpp
 )
