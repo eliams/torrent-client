@@ -16,10 +16,12 @@ add_compile_options(
 )
 
 add_executable(torrent-client
+    include/bencode_parser.h
+    src/bencode_parser.cpp
     src/main.cpp
 )
 
 target_include_directories(torrent-client
-    PUBLIC
+    PRIVATE
         include
 )
