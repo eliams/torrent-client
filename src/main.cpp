@@ -2,6 +2,8 @@
 
 int main(int argc, char* argv[])
 {
-    std::cout << "Torrent client v1.0" << std::endl;
+    (void)argc;
+    (void)argv;
+    std::cout << "Torrent client v0.0.1" << std::endl;
     return 0;
 }

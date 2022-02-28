@@ -7,6 +7,13 @@ project(torrent-client
         VERSION 0.0.1)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+add_compile_options(
+    -Wall
+    -Wextra
+    -Werror
+)
 
 add_executable(torrent-client
     src/main.cpp
