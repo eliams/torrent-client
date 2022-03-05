@@ -15,13 +15,26 @@ add_compile_options(
     -Werror
 )
 
-add_executable(torrent-client
+add_library(bencode_parser STATIC
     include/bencode_parser.h
     src/bencode_parser.cpp
+)
+
+target_include_directories(bencode_parser
+    PUBLIC
+        include
+)
+
+add_executable(torrent-client
     src/main.cpp
 )
 
 target_include_directories(torrent-client
     PRIVATE
         include
+)
+
+target_link_libraries(torrent-client
+    PRIVATE
+        bencode_parser
 )
