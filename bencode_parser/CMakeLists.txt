@@ -7,3 +7,5 @@ target_include_directories(bencode_parser
     PUBLIC 
         include
 )
+
+add_subdirectory(test)
