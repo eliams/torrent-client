@@ -1,9 +1,16 @@
-#include <gtest/gtest.h>
+#include <bencode_parser.h>
 
-// Demonstrate some basic assertions.
-TEST(HelloTest, BasicAssertions) {
-    // Expect two strings not to be equal.
-    EXPECT_STRNE("hello", "world");
-    // Expect equality.
-    EXPECT_EQ(7 * 6, 42);
+#include <sstream>
+#include <gmock/gmock.h>
+#include <variant>
+
+TEST(BencodeParser, parseIntegerZero)
+{
+    std::stringstream ss;
+    ss.str("i0e");
+
+    auto bvalue = bencode::parseInteger(ss);
+
+    ASSERT_THAT(std::holds_alternative<bencode::BencodeInt>(bvalue.value), testing::IsTrue());
+    EXPECT_THAT(std::get<bencode::BencodeInt>(bvalue.value), testing::Eq(0));
 }

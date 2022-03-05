@@ -5,7 +5,8 @@ add_executable(test_bencode_parser
 )
 
 target_link_libraries(test_bencode_parser
-    gtest_main
+    bencode_parser
+    gmock_main
 )
 
 include(GoogleTest)
