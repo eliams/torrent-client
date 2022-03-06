@@ -67,3 +67,21 @@ TEST_F(BencodeParserTest, parseStringSimple)
     ASSERT_THAT(std::holds_alternative<bencode::BencodeString>(bvalue.value), testing::IsTrue());
     EXPECT_THAT(std::get<bencode::BencodeString>(bvalue.value), testing::StrEq("hello"));
 }
+
+TEST_F(BencodeParserTest, parseStringInvalidSize)
+{
+    _ss.str("abc:def");
+
+    auto bvalue = bencode::parseString(_ss);
+
+    EXPECT_THAT(std::holds_alternative<std::monostate>(bvalue.value), testing::IsTrue());
+}
+
+TEST_F(BencodeParserTest, parseStringInvalidSeparator)
+{
+    _ss.str("3-abc");
+
+    auto bvalue = bencode::parseString(_ss);
+
+    EXPECT_THAT(std::holds_alternative<std::monostate>(bvalue.value), testing::IsTrue());
+}
