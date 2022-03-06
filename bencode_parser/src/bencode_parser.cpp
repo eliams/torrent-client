@@ -1,6 +1,9 @@
 #include "bencode_parser.h"
 
+#include <iostream>
+
 #include <istream>
+#include <string>
 
 namespace bencode {
 
@@ -37,6 +40,30 @@ BencodeValue parseInteger(std::istream& inputStream)
         return BencodeValue{std::monostate()};
 
     return BencodeValue{number * signMultipier};
+}
+
+
+BencodeValue parseString(std::istream& inputStream)
+{
+    size_t size = 0;
+
+    inputStream >> size;
+
+    if (inputStream.fail())
+        return BencodeValue{std::monostate()};
+
+    if (inputStream.get() != ':')
+        return BencodeValue{std::monostate()};
+
+    char content[size + 1];
+
+    inputStream.read(content, size);
+    content[size] = '\0';
+
+    if (static_cast<size_t>(inputStream.gcount()) != size)
+        return BencodeValue{std::monostate()};
+
+    return BencodeValue{BencodeString{content}}; 
 }
 
 } // namespace bencode

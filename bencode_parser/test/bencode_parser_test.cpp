@@ -1,7 +1,7 @@
 #include <bencode_parser.h>
 
-#include <sstream>
 #include <gmock/gmock.h>
+#include <sstream>
 #include <variant>
 
 class BencodeParserTest : public testing::Test
@@ -56,4 +56,14 @@ TEST_F(BencodeParserTest, parseIntegerInvalidPrefix)
     auto bvalue = bencode::parseInteger(_ss);
 
     EXPECT_THAT(std::holds_alternative<std::monostate>(bvalue.value), testing::IsTrue());
+}
+
+TEST_F(BencodeParserTest, parseStringSimple)
+{
+    _ss.str("5:hello");
+
+    auto bvalue = bencode::parseString(_ss);
+    
+    ASSERT_THAT(std::holds_alternative<bencode::BencodeString>(bvalue.value), testing::IsTrue());
+    EXPECT_THAT(std::get<bencode::BencodeString>(bvalue.value), testing::StrEq("hello"));
 }

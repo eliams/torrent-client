@@ -22,5 +22,6 @@ struct BencodeValue
 BencodeValue parseBencodeString(const std::string& str);
 
 BencodeValue parseInteger(std::istream& inputStream);
+BencodeValue parseString(std::istream& inputStream);
 
 } // namespace bencode
