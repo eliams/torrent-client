@@ -39,3 +39,21 @@ TEST_F(BencodeParserTest, parseIntegerNegativeNumber)
     ASSERT_THAT(std::holds_alternative<bencode::BencodeInt>(bvalue.value), testing::IsTrue());
     EXPECT_THAT(std::get<bencode::BencodeInt>(bvalue.value), testing::Eq(-21));
 }
+
+TEST_F(BencodeParserTest, parseIntegerInvalidValue)
+{
+    _ss.str("iabce");
+
+    auto bvalue = bencode::parseInteger(_ss);
+
+    EXPECT_THAT(std::holds_alternative<std::monostate>(bvalue.value), testing::IsTrue());
+}
+
+TEST_F(BencodeParserTest, parseIntegerInvalidPrefix)
+{
+    _ss.str("a123e");
+
+    auto bvalue = bencode::parseInteger(_ss);
+
+    EXPECT_THAT(std::holds_alternative<std::monostate>(bvalue.value), testing::IsTrue());
+}

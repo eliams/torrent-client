@@ -33,6 +33,9 @@ BencodeValue parseInteger(std::istream& inputStream)
 
     inputStream >> number;
 
+    if (inputStream.fail())
+        return BencodeValue{std::monostate()};
+
     return BencodeValue{number * signMultipier};
 }
 
