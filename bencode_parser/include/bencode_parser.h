@@ -23,5 +23,7 @@ BencodeValue parseBencodeString(const std::string& str);
 
 BencodeValue parseInteger(std::istream& inputStream);
 BencodeValue parseString(std::istream& inputStream);
+BencodeValue parseList(std::istream& inputStream);
+BencodeValue parseDictionary(std::istream& inputStream);
 
 } // namespace bencode

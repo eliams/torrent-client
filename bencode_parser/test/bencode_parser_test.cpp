@@ -85,3 +85,18 @@ TEST_F(BencodeParserTest, parseStringInvalidSeparator)
 
     EXPECT_THAT(std::holds_alternative<std::monostate>(bvalue.value), testing::IsTrue());
 }
+
+TEST_F(BencodeParserTest, parseListOneElement)
+{
+    _ss.str("li34ee");
+
+    auto bvalue = bencode::parseList(_ss);
+
+    ASSERT_THAT(std::holds_alternative<bencode::BencodeList>(bvalue.value), testing::IsTrue());
+
+    auto list = std::get<bencode::BencodeList>(bvalue.value);
+
+    EXPECT_THAT(list.size(), testing::Eq(1));
+    EXPECT_THAT(std::holds_alternative<bencode::BencodeInt>(list.front().value), testing::IsTrue());
+    EXPECT_THAT(std::get<bencode::BencodeInt>(list.front().value), testing::Eq(34));
+}

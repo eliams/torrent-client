@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include <cctype>
 #include <istream>
 #include <string>
 
@@ -9,11 +10,20 @@ namespace bencode {
 
 constexpr size_t MaxNumCharInteger = 19;
 
-BencodeValue parseBencodeString(const std::string& str)
+BencodeValue parseBencodeValue(std::istream& inputStream)
 {
-    if (str == "number")
-        return BencodeValue{5};
-    return BencodeValue{str};
+    char c = inputStream.peek();
+
+    if (c == 'i')
+        return parseInteger(inputStream);
+    else if (std::isdigit(c))
+        return parseString(inputStream);
+    else if (c == 'l')
+        return parseList(inputStream);
+    else if (c == 'd')
+        return parseDictionary(inputStream);
+
+    return BencodeValue{std::monostate()};
 }
 
 BencodeValue parseInteger(std::istream& inputStream)
@@ -64,6 +74,38 @@ BencodeValue parseString(std::istream& inputStream)
         return BencodeValue{std::monostate()};
 
     return BencodeValue{BencodeString{content}}; 
+}
+
+BencodeValue parseList(std::istream& inputStream)
+{
+    char c = inputStream.get();
+
+    if (c != 'l')
+        return BencodeValue{std::monostate()};
+
+    BencodeValue bvalue{BencodeList{}};
+    auto& list = std::get<BencodeList>(bvalue.value);
+
+    do
+    {
+        list.push_back(parseBencodeValue(inputStream));
+        c = inputStream.peek();
+    }
+    while (c != 'e');
+
+    c = inputStream.get();
+
+    return bvalue;
+}
+
+BencodeValue parseDictionary(std::istream& inputStream)
+{
+    char prefix = inputStream.get();
+
+    if (prefix != 'd')
+        return BencodeValue{std::monostate()};
+
+    return BencodeValue{std::monostate()};
 }
 
 } // namespace bencode
