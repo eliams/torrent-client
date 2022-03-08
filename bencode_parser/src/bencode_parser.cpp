@@ -29,11 +29,13 @@ BencodeValue parseBencodeValue(std::istream& inputStream)
 
 BencodeValue parseInteger(std::istream& inputStream)
 {
+    // read 'i' prefix
     char prefix = inputStream.get();
 
     if (prefix != 'i')
         return BencodeValue{std::monostate()};
 
+    // check for number sign
     char signChar = inputStream.peek();
     int signMultipier = 1;
 
@@ -43,6 +45,7 @@ BencodeValue parseInteger(std::istream& inputStream)
         (void)inputStream.get();
     }
 
+    // parse number
     long number = 0;
 
     inputStream >> number;
@@ -59,6 +62,7 @@ BencodeValue parseInteger(std::istream& inputStream)
 
 BencodeValue parseString(std::istream& inputStream)
 {
+        // read size
     size_t size = 0;
 
     inputStream >> size;
@@ -66,9 +70,11 @@ BencodeValue parseString(std::istream& inputStream)
     if (inputStream.fail())
         return BencodeValue{std::monostate()};
 
+    // read delimiter between size and content
     if (inputStream.get() != ':')
         return BencodeValue{std::monostate()};
 
+    // read string content
     char content[size + 1];
 
     inputStream.read(content, size);
@@ -82,6 +88,7 @@ BencodeValue parseString(std::istream& inputStream)
 
 BencodeValue parseList(std::istream& inputStream)
 {
+    // read 'l' prefix
     char c = inputStream.get();
 
     if (c != 'l')
@@ -90,6 +97,7 @@ BencodeValue parseList(std::istream& inputStream)
     BencodeValue bvalue{BencodeList{}};
     auto& list = std::get<BencodeList>(bvalue.value);
 
+    // parse list content
     do
     {
         list.push_back(parseBencodeValue(inputStream));
@@ -97,6 +105,7 @@ BencodeValue parseList(std::istream& inputStream)
     }
     while (c != 'e');
 
+    // read the ending 'e'
     c = inputStream.get();
 
     return bvalue;
