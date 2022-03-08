@@ -183,10 +183,8 @@ TEST_F(BencodeParserTest, parseListMultipleElements)
     EXPECT_THAT(std::holds_alternative<bencode::BencodeString>((*it).value), testing::IsTrue());
     EXPECT_THAT(std::get<bencode::BencodeString>((*it).value), testing::StrEq("world"));
 
-
     it++;
 
     EXPECT_THAT(std::holds_alternative<bencode::BencodeInt>((*it).value), testing::IsTrue());
     EXPECT_THAT(std::get<bencode::BencodeInt>((*it).value), testing::Eq(56));
-
 }

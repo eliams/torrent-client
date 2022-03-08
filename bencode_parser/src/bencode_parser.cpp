@@ -8,8 +8,6 @@
 
 namespace bencode {
 
-constexpr size_t MaxNumCharInteger = 19;
-
 BencodeValue parseBencodeValue(std::istream& inputStream)
 {
     char c = inputStream.peek();
