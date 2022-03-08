@@ -26,6 +26,7 @@ BencodeValue parseBencodeValue(std::istream& inputStream)
     return BencodeValue{std::monostate()};
 }
 
+
 BencodeValue parseInteger(std::istream& inputStream)
 {
     char prefix = inputStream.get();
@@ -48,6 +49,9 @@ BencodeValue parseInteger(std::istream& inputStream)
 
     if (inputStream.fail())
         return BencodeValue{std::monostate()};
+
+    // Read the ending 'e'
+    inputStream.get();
 
     return BencodeValue{number * signMultipier};
 }
