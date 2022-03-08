@@ -100,3 +100,24 @@ TEST_F(BencodeParserTest, parseListOneElement)
     EXPECT_THAT(std::holds_alternative<bencode::BencodeInt>(list.front().value), testing::IsTrue());
     EXPECT_THAT(std::get<bencode::BencodeInt>(list.front().value), testing::Eq(34));
 }
+
+TEST_F(BencodeParserTest, parseListTwoInteger)
+{
+    _ss.str("li1ei2ee");
+
+    auto bvalue = bencode::parseList(_ss);
+
+    ASSERT_THAT(std::holds_alternative<bencode::BencodeList>(bvalue.value), testing::IsTrue());
+
+    auto list = std::get<bencode::BencodeList>(bvalue.value);
+    auto it = list.cbegin();
+
+    EXPECT_THAT(list.size(), testing::Eq(2));
+    EXPECT_THAT(std::holds_alternative<bencode::BencodeInt>((*it).value), testing::IsTrue());
+    EXPECT_THAT(std::get<bencode::BencodeInt>((*it).value), testing::Eq(1));
+
+    it++;
+
+    EXPECT_THAT(std::holds_alternative<bencode::BencodeInt>((*it).value), testing::IsTrue());
+    EXPECT_THAT(std::get<bencode::BencodeInt>((*it).value), testing::Eq(2));
+}
