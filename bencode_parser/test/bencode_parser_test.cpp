@@ -86,7 +86,7 @@ TEST_F(BencodeParserTest, parseStringInvalidSeparator)
     EXPECT_THAT(std::holds_alternative<std::monostate>(bvalue.value), testing::IsTrue());
 }
 
-TEST_F(BencodeParserTest, parseListOneElement)
+TEST_F(BencodeParserTest, parseListOneInteger)
 {
     _ss.str("li34ee");
 
@@ -101,7 +101,22 @@ TEST_F(BencodeParserTest, parseListOneElement)
     EXPECT_THAT(std::get<bencode::BencodeInt>(list.front().value), testing::Eq(34));
 }
 
-TEST_F(BencodeParserTest, parseListTwoInteger)
+TEST_F(BencodeParserTest, parseListOneString)
+{
+    _ss.str("l5:helloe");
+
+    auto bvalue = bencode::parseList(_ss);
+
+    ASSERT_THAT(std::holds_alternative<bencode::BencodeList>(bvalue.value), testing::IsTrue());
+
+    auto list = std::get<bencode::BencodeList>(bvalue.value);
+
+    EXPECT_THAT(list.size(), testing::Eq(1));
+    EXPECT_THAT(std::holds_alternative<bencode::BencodeString>(list.front().value), testing::IsTrue());
+    EXPECT_THAT(std::get<bencode::BencodeString>(list.front().value), testing::StrEq("hello"));
+}
+
+TEST_F(BencodeParserTest, parseListTwoIntegers)
 {
     _ss.str("li1ei2ee");
 
@@ -120,4 +135,58 @@ TEST_F(BencodeParserTest, parseListTwoInteger)
 
     EXPECT_THAT(std::holds_alternative<bencode::BencodeInt>((*it).value), testing::IsTrue());
     EXPECT_THAT(std::get<bencode::BencodeInt>((*it).value), testing::Eq(2));
+}
+
+TEST_F(BencodeParserTest, parseListTwoStrings)
+{
+    _ss.str("l5:hello5:worlde");
+
+    auto bvalue = bencode::parseList(_ss);
+
+    ASSERT_THAT(std::holds_alternative<bencode::BencodeList>(bvalue.value), testing::IsTrue());
+
+    auto list = std::get<bencode::BencodeList>(bvalue.value);
+    auto it = list.cbegin();
+
+    EXPECT_THAT(list.size(), testing::Eq(2));
+    EXPECT_THAT(std::holds_alternative<bencode::BencodeString>((*it).value), testing::IsTrue());
+    EXPECT_THAT(std::get<bencode::BencodeString>((*it).value), testing::StrEq("hello"));
+
+    it++;
+
+    EXPECT_THAT(std::holds_alternative<bencode::BencodeString>((*it).value), testing::IsTrue());
+    EXPECT_THAT(std::get<bencode::BencodeString>((*it).value), testing::StrEq("world"));
+}
+
+TEST_F(BencodeParserTest, parseListMultipleElements)
+{
+    _ss.str("l5:helloi12e5:worldi56ee");
+
+    auto bvalue = bencode::parseList(_ss);
+
+    ASSERT_THAT(std::holds_alternative<bencode::BencodeList>(bvalue.value), testing::IsTrue());
+
+    auto list = std::get<bencode::BencodeList>(bvalue.value);
+    auto it = list.cbegin();
+
+    EXPECT_THAT(list.size(), testing::Eq(4));
+    EXPECT_THAT(std::holds_alternative<bencode::BencodeString>((*it).value), testing::IsTrue());
+    EXPECT_THAT(std::get<bencode::BencodeString>((*it).value), testing::StrEq("hello"));
+
+    it++;
+
+    EXPECT_THAT(std::holds_alternative<bencode::BencodeInt>((*it).value), testing::IsTrue());
+    EXPECT_THAT(std::get<bencode::BencodeInt>((*it).value), testing::Eq(12));
+
+    it++;
+
+    EXPECT_THAT(std::holds_alternative<bencode::BencodeString>((*it).value), testing::IsTrue());
+    EXPECT_THAT(std::get<bencode::BencodeString>((*it).value), testing::StrEq("world"));
+
+
+    it++;
+
+    EXPECT_THAT(std::holds_alternative<bencode::BencodeInt>((*it).value), testing::IsTrue());
+    EXPECT_THAT(std::get<bencode::BencodeInt>((*it).value), testing::Eq(56));
+
 }
