@@ -111,12 +111,32 @@ BencodeValue parseList(std::istream& inputStream)
 
 BencodeValue parseDictionary(std::istream& inputStream)
 {
-    char prefix = inputStream.get();
+    // read 'd' prefix
+    char c = inputStream.get();
 
-    if (prefix != 'd')
+    if (c != 'd')
         return BencodeValue{std::monostate()};
 
-    return BencodeValue{std::monostate()};
+    BencodeValue bvalue{BencodeDictionary{}};
+    auto& dict = std::get<BencodeDictionary>(bvalue.value);
+
+    // parse dictionary content
+    do
+    {
+        BencodeValue key = parseString(inputStream);
+
+        if (!std::holds_alternative<BencodeString>(key.value))
+            return BencodeValue{std::monostate{}};
+
+        BencodeValue value = parseBencodeValue(inputStream);
+
+        c = inputStream.get();
+    } while (c != 'e');
+
+    // read the ending 'e'
+    c = inputStream.get();
+
+    return bvalue;
 }
 
 } // namespace bencode
